@@ -1,0 +1,142 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  pull_request:
+    branches: 
+    - master 
+    - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: npm ci
+    - run: npm run lint
+
+  merge: 
+    needs: lint
+    if: github.actor == 'sqaisar' ||  startsWith(github.actor, 'dependabot')
+    
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: automerge
+      uses: "pascalgn/automerge-action@v0.15.6"
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        MERGE_LABELS: ""
+
+  test:
+    needs: merge
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - id: tagger
+      uses: phish108/autotag-action@1.1.60
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        dry-run: 'TRUE'
+        branch: master 
+    
+    - name: Autotag Draft
+      uses: phish108/autotag-action@master
+      id: taggerTest
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        branch: master
+        dry-run: 'true'
+
+    - name: verify Tags
+      run: |
+        if [ "${{ steps.tagger.outputs.new-tag }}" != "${{ steps.taggerTest.outputs.new-tag }}" ]
+        then
+          exit 1
+        fi
+
+  verify: 
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: check changes
+        id: release
+        uses: phish108/release-check@1.0.15
+      - name: only dev changes (from PR)
+        run: exit 1
+        if: ${{ steps.release.outputs.hold_development == 'true' }}
+      - name: only protected changes (from other non-main branch)
+        run: exit 1
+        if: ${{ steps.release.outputs.hold_protected == 'true' }}
+      - name: Proceed to release
+        run: echo OK
+
+  build:
+    needs: verify
+    if: github.actor == 'sqaisar' || startsWith(github.actor, 'dependabot')
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: 
+        - 16.x
+        - 18.x
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+          ref: master
+    - run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: check changes
+      id: release
+      uses: phish108/release-check@1.0.15
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }} 
+    
+    - id: tagger
+      if: ${{ steps.release.outputs.proceed == 'true' }}
+      uses: phish108/autotag-action@1.1.60
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        branch: master
+        dry-run: 'TRUE'
+         
+    - if: ${{ steps.release.outputs.proceed == 'true' }}
+      run: | 
+        echo "${{ steps.tagger.outputs.new-tag }}"
+        npm ci
+        npm run package
+        npm --no-git-tag-version --allow-same-version version ${{ steps.tagger.outputs.new-tag }} 
+        sed -ri "s/sqaisar\/auto-release@[0-9]*\.[0-9]*\.[0-9]*/sqaisar\/auto-release@${{ steps.tagger.outputs.new-tag }}/g" README.md
+        git commit -m "updated dist file for $GITSHA" -a 
+      env:
+        GITSHA: ${{ github.sha }}
+
+    # very risky ... because of using the master branch
+    - name: Push changes
+      if: ${{ steps.release.outputs.proceed == 'true' }}
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - uses: phish108/autotag-action@1.1.60
+      if: ${{ steps.release.outputs.proceed == 'true' }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        branch: master

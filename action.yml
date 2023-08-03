@@ -1,0 +1,31 @@
+name: 'AutoRelease'
+author: 'sqaisar'
+description: 'AutoRelease with Semantic Versioning from next and latest branches'
+branding:
+  icon: tag
+  color: green
+inputs:
+  github-token: # id of input
+    default: ${{ github.token }}
+    required: false
+    description: 'the GH token to connect to github from the action'
+  dry-run:
+    description: "check if the action would succeed"
+    required: false
+    default: "FALSE"
+  release-branch:
+    description: "release branch name"
+    required: false
+    default: "release"
+  main-branch:
+    description: "main branch name"
+    required: false
+    default: "next"
+outputs:
+  new-tag: # id of output
+    description: 'new tag'
+  tag: # id of output
+    description: 'latest tag'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
