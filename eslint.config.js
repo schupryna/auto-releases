@@ -13,26 +13,6 @@ module.exports = [
             }
         },
         "rules": {
-            "indent": [
-                "error",
-                4,
-                {
-                    "SwitchCase": 2,
-                    "VariableDeclarator": {
-                        "var": 2,
-                        "let": 2,
-                        "const": 3
-                    },
-                     "MemberExpression": 1,
-                     "FunctionDeclaration": {"parameters": "first"},
-                     "CallExpression": {"arguments": "first"},
-                     "ObjectExpression": 1
-                }
-            ],
-            "quotes": [
-                "error",
-                "double"
-            ],
             "semi": [
                 "error",
                 "always"
@@ -55,13 +35,6 @@ module.exports = [
             "block-spacing": [
                 "error",
                 "always"
-            ],
-            "brace-style": [
-                "error",
-                "stroustrup",
-                {
-                    "allowSingleLine": true
-                }
             ],
             "eol-last": [
                 "error",

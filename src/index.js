@@ -4,54 +4,13 @@
 
 const core   = require("@actions/core");
 const github = require("@actions/github");
-const semver = require("semver");
+// const semver = require("semver");
+const shelljs = require("shelljs");
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
 
-async function checkTag(octokit, tagName) {
-    const { data } = await octokit.rest.repos.listTags({
-        owner,
-        repo
-    });
-
-    if (data) {
-        const result = data.filter(tag => tag.name === tagName);
-
-        if (result.length) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-async function getLatestTag(octokit, boolAll = true) {
-    const { data } = await octokit.rest.repos.listTags({
-        owner,
-        repo
-    });
-
-    // ensure the highest version number is the last element
-    // strip all non version tags
-    const allVTags = data
-        .filter(tag => semver.clean(tag.name) !== null);
-
-    allVTags
-        .sort((a, b) => semver.compare(semver.clean(a.name), semver.clean(b.name)));
-
-    if (boolAll) {
-        return allVTags.pop();
-    }
-
-    // filter prereleases
-    // core.info("filter only main releases");
-
-    const filtered = allVTags.filter((b) => semver.prerelease(b.name) === null);
-    const result = filtered.pop();
-
-    return result;
-}
+const Error = {};
 
 async function loadBranch(octokit, branch) {
     const result = await octokit.rest.git.listMatchingRefs({
@@ -64,117 +23,12 @@ async function loadBranch(octokit, branch) {
     return result.data.shift();
 }
 
-async function checkMessages(octokit, branchHeadSha, tagSha, issueTags) {
-    const sha = branchHeadSha;
-
-    // core.info(`load commits since ${sha}`);
-
-    let releaseBump = "none";
-
-    const result = await octokit.rest.repos.listCommits({
-        owner,
-        repo,
-        sha
-    });
-
-    if (!(result && result.data)) {
-        return releaseBump;
-    }
-
-    const wip   = new RegExp("#wip\\b");
-    const major = new RegExp("#major\\b");
-    const minor = new RegExp("#minor\\b");
-    const patch = new RegExp("#patch\\b");
-
-    const fix   = new RegExp("fix(?:es)? #\\d+");
-    const matcher = new RegExp(/fix(?:es)? #(\d+)\b/);
-
-    for (const commit of result.data) {
-        // core.info(commit.message);
-        const message = commit.commit.message;
-
-        if (commit.sha === tagSha) {
-            break;
-        }
-        // core.info(`commit is : "${JSON.stringify(commit.commit, undefined, 2)}"`);
-        // core.info(`message is : "${message}" on ${commit.commit.committer.date} (${commit.sha})`);
-
-        if (wip.test(message)) {
-            // core.info("found wip message, skip");
-            continue;
-        }
-
-        if (major.test(message)) {
-            // core.info("found major tag, stop");
-            return "major";
-        }
-
-        if (minor.test(message)) {
-            // core.info("found minor tag");
-
-            releaseBump = "minor";
-            continue;
-        }
-
-        if (releaseBump !== "minor" && patch.test(message)) {
-            // core.info("found patch tag");
-            releaseBump = "patch";
-            continue;
-        }
-
-        if (releaseBump !== "minor" && fix.test(message)) {
-            // core.info("found a fix message, check issue for enhancements");
-
-            const id = matcher.exec(message);
-
-            if (id && Number(id[1]) > 0) {
-                const issue_number = Number(id[1]);
-
-                core.info(`check issue ${issue_number} for minor labels`);
-
-                const { data } = await octokit.rest.issues.get({
-                    owner,
-                    repo,
-                    issue_number
-                });
-
-                if (data) {
-                    releaseBump = "patch";
-
-                    for (const label of data.labels) {
-
-                        if (issueTags.indexOf(label.name) >= 0) {
-                            core.info("found enhancement issue");
-                            releaseBump = "minor";
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // continue;
-        }
-        // core.info("no info message");
-    }
-
-    return releaseBump;
-}
-
-function isReleaseBranch(branchName, branchList) {
-    for (const branch of branchList.split(",").map(b => b.trim())) {
-        const testBranchName = new RegExp(branch);
-
-        if (testBranchName.test(branchName)) {
-            return true;
-        }
-    }
-    return false;
-}
 
 async function getCurrentTagInBranch() {
-    const output =  await shelljs.exec(`git describe --tags --abbrev=0`, { 
-        silent: true,
+    const output =  await shelljs.exec("git describe --tags --abbrev=0", {
+       silent: true,
      });
+
      return output.stdout.trim();
 }
 
@@ -194,7 +48,7 @@ async function action() {
     const releaseBranch = core.getInput("release-branch");
 
     const activeBranch = github.context.ref.replace(/refs\/heads\//, "");
-    let branchInfo, nextVersion;
+    let branchInfo;
 
 
     core.info(`load the history of activity-branch ${ activeBranch } from context ref ${ github.context.ref }`);
@@ -223,7 +77,8 @@ async function action() {
         core.info("dry run, don't perform tagging");
         return;
     }
-
+    core.info(sha);
+    core.info(currentTagInBranch);
     // const newTag = `${ withV }${ nextVersion }`;
 
     // core.info(`really add tag ${ customTag ? customTag : newTag }`);
