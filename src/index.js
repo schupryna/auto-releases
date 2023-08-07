@@ -9,7 +9,6 @@ const shelljs = require("shelljs");
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
 
-function Error(){}
 
 async function loadBranch(octokit, branch) {
     const result = await octokit.rest.git.listMatchingRefs({
@@ -129,7 +128,7 @@ async function action() {
     if(!nextVersionCommand.ok){
         throw new Error(nextVersionCommand.stderr);
     }
-    
+
     let semverVersionBump = nextVersionCommand.stdout.trim();
 
     core.info('original SEMVER bump calculated: ', semverVersionBump);
