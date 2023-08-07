@@ -24565,12 +24565,17 @@ async function setupAutoCLI() {
         '1'
     ]);
 
-    io.mv(
+    io.cp(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
     );
+    // io.cp(
+    //     path.join(tempDir, "auto-linux"),
+    //     "/usr/local/bin/auto",
+    // );
     core.info("Successfully downloaded auto and extracted it");
-    core.addPath(tempDir);
+    core.addPath(path.join(tempDir, "auto-linux"));
+    core.addPath(path.join(tempDir, "auto"));
 }
 
 module.exports = { setupAutoCLI };
