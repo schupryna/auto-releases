@@ -20065,14 +20065,6 @@ try {
 
 /***/ }),
 
-/***/ 955:
-/***/ ((module) => {
-
-module.exports = eval("require")("auto");
-
-
-/***/ }),
-
 /***/ 2877:
 /***/ ((module) => {
 
@@ -20278,7 +20270,6 @@ const core   = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 const semver = __nccwpck_require__(1383);
 const shelljs = __nccwpck_require__(3516);
-const auto = __nccwpck_require__(955);
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
@@ -20298,9 +20289,11 @@ async function loadBranch(octokit, branch) {
 async function setupProj() {
     core.info("Fetching all branches");
 
-    const output = await shelljs.exec("git fetch --all --force && npm install -g auto", {
+    const output = await shelljs.exec("npm install -g auto", {
         silent: true,
     });
+
+    core.info(`output.stdout: ${output.stdout}`);
 
     if(output.ok){
         core.info(output.stdout.trim());

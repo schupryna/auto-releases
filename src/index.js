@@ -6,7 +6,6 @@ const core   = require("@actions/core");
 const github = require("@actions/github");
 const semver = require("semver");
 const shelljs = require("shelljs");
-const auto = require("auto");
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
@@ -26,9 +25,11 @@ async function loadBranch(octokit, branch) {
 async function setupProj() {
     core.info("Fetching all branches");
 
-    const output = await shelljs.exec("git fetch --all --force && npm install -g auto", {
+    const output = await shelljs.exec("npm install -g auto", {
         silent: true,
     });
+
+    core.info(`output.stdout: ${output.stdout}`);
 
     if(output.ok){
         core.info(output.stdout.trim());
