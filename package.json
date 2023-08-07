@@ -22,6 +22,7 @@
   "dependencies": {
     "@actions/core": "1.10.0",
     "@actions/github": "5.1.1",
+    "@actions/io": "^1.1.3",
     "@auto-it/jira": "^11.0.0",
     "@auto-it/released": "^11.0.0",
     "@auto-it/slack": "^11.0.0",
