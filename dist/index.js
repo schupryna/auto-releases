@@ -24549,6 +24549,7 @@ const path = __nccwpck_require__(1017);
 const io = __nccwpck_require__(7436);
 const hc = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
+const fs = __nccwpck_require__(7147);
 
 async function setupAutoCLI() {
     const tempDownloadFolder = 'temp_' + Math.floor(Math.random() * 2000000000);
@@ -24564,7 +24565,13 @@ async function setupAutoCLI() {
         '--strip',
         '1'
     ]);
+    
+    core.info(`downloadPath: ${downloadPath}`);
+    core.info(`extPath: ${extPath}`);
+    core.info(`tempDir: ${tempDir}`);
+    const directories = await fs.readdirSync(tempDir);
 
+    core.info(directories);
     io.cp(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),

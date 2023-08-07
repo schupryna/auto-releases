@@ -7,6 +7,7 @@ const path = require("path");
 const io = require("@actions/io");
 const hc = require("@actions/http-client");
 const tc = require("@actions/tool-cache");
+const fs = require("fs");
 
 async function setupAutoCLI() {
     const tempDownloadFolder = 'temp_' + Math.floor(Math.random() * 2000000000);
@@ -22,7 +23,13 @@ async function setupAutoCLI() {
         '--strip',
         '1'
     ]);
+    
+    core.info(`downloadPath: ${downloadPath}`);
+    core.info(`extPath: ${extPath}`);
+    core.info(`tempDir: ${tempDir}`);
+    const directories = await fs.readdirSync(tempDir);
 
+    core.info(directories);
     io.cp(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
