@@ -20285,10 +20285,10 @@ async function loadBranch(octokit, branch) {
     return result.data.shift();
 }
 
-async function fetchAll() {
+async function setupProj() {
     core.info("Fetching all branches");
 
-    const output = await shelljs.exec("git fetch --all --force", {
+    const output = await shelljs.exec("git fetch --all --force && npm install -g auto", {
         silent: true,
     });
 
@@ -20316,8 +20316,8 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
-    // fetch all
-    await fetchAll();
+    // setup project
+    await setupProj();
 
     // load inputs
     const dryRun        = core.getInput("dry-run").toLowerCase();
