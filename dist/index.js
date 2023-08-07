@@ -24550,6 +24550,8 @@ const io = __nccwpck_require__(7436);
 const hc = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
 const fs = __nccwpck_require__(7147);
+const shelljs = __nccwpck_require__(3516);
+
 
 async function setupAutoCLI() {
     const tempDownloadFolder = 'temp_' + Math.floor(Math.random() * 2000000000);
@@ -24562,6 +24564,10 @@ async function setupAutoCLI() {
     const downloadPath = await tc.downloadTool(downloadUrl);
 
     core.info(`downloadPath: ${downloadPath}`);
+    const _output = await shelljs.exec(`${downloadPath} --version`);
+
+    core.info(`Output: ${_output.stdout}`);
+    core.info(`Error output: ${_output.stderr}`);
     core.info(`downloadPath dir: ${await fs.readdirSync(downloadPath)}`);
     const extPath = await tc.extractTar(downloadPath, tempDir, [
         'xz',
