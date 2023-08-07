@@ -114,7 +114,7 @@ async function action() {
 
     // calculate the SEMVER bump (major, minor, patch, premajor, preminor, prepatch)
     // calculation uses the labels on PRs merged into current branch since the last release was cut
-    let semverVersionBump = await shelljs
+    const nextVersionCommand = await shelljs
     .exec(
         `./node_modules/.bin/auto version --from ${
             releaseType === 'full-release'
@@ -124,8 +124,13 @@ async function action() {
         {
             silent: true,
         }
-    )
-    .stdout.trim();
+    );
+    
+    if(!nextVersionCommand.ok){
+        throw new Error(nextVersionCommand.stderr);
+    }
+    
+    let semverVersionBump = nextVersionCommand.stdout.trim();
 
     core.info('original SEMVER bump calculated: ', semverVersionBump);
 
