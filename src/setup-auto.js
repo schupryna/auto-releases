@@ -6,7 +6,7 @@ const core = require("@actions/core");
 const path = require("path");
 const io = require("@actions/io");
 const hc = require("@actions/http-client");
-const tc = require("@actions/tools-cache");
+const tc = require("@actions/tool-cache");
 
 async function setupAutoCLI() {
     const tempDownloadFolder = 'temp_' + Math.floor(Math.random() * 2000000000);
@@ -22,7 +22,7 @@ async function setupAutoCLI() {
         '--strip',
         '1'
     ]);
-    
+
     io.mv(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
