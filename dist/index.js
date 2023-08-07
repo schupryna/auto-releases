@@ -17028,8 +17028,11 @@ async function fetchAll() {
         silent: true,
     });
 
-    core.info(output);
-    core.info(output.stdout.trim());
+    if(output.ok){
+        core.info(output.stdout.trim());
+    }else {
+        core.error(output.stderr.trim());
+    }
 }
 
 async function getCurrentTagInBranch() {
