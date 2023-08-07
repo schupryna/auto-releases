@@ -17021,6 +17021,13 @@ async function loadBranch(octokit, branch) {
     return result.data.shift();
 }
 
+async function fetchAll() {
+    const output = await shelljs.exec("git fetch --all --force", {
+        silent: true,
+    });
+
+    core.info(output.stdout.trim());
+}
 
 async function getCurrentTagInBranch() {
     const output =  await shelljs.exec("git describe --tags --abbrev=0", {
@@ -17039,8 +17046,10 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
+    // fetch all
+    await fetchAll();
+
     // load inputs
-    // const customTag     = core.getInput('custom-tag');
     const dryRun        = core.getInput("dry-run").toLowerCase();
     const mainBranch = core.getInput("main-branch");
     const releaseBranch = core.getInput("release-branch");
