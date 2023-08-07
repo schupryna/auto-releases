@@ -78,7 +78,7 @@ async function action() {
         return;
     }
     core.info(sha);
-    core.info(currentTagInBranch);
+    core.info(`currentTagInBranch: ${currentTagInBranch}`);
     // const newTag = `${ withV }${ nextVersion }`;
 
     // core.info(`really add tag ${ customTag ? customTag : newTag }`);
