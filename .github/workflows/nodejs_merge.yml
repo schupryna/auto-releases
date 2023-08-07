@@ -33,7 +33,7 @@ jobs:
     - name: automerge
       uses: "pascalgn/automerge-action@v0.15.6"
       env:
-        GH_PAT: "${{ secrets.GH_PAT }}"
+        GITHUB_TOKEN"${{ secrets.GH_PAT }}"
         MERGE_LABELS: ""
 
   test:
@@ -133,7 +133,7 @@ jobs:
       if: ${{ steps.release.outputs.proceed == 'true' }}
       uses: ad-m/github-push-action@master
       with:
-        GH_PAT: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN${{ secrets.GH_PAT }}
     
     - uses: phish108/autotag-action@1.1.60
       if: ${{ steps.release.outputs.proceed == 'true' }}

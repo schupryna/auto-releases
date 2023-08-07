@@ -178,7 +178,7 @@ jobs:
     - name: automerge
       uses: "pascalgn/automerge-action@5ad9f38505afff96c6ad2d1c1bf2775135a7d309"
       env:
-        GH_PAT: "${{ secrets.GH_PAT }}"
+        GITHUB_TOKEN"${{ secrets.GH_PAT }}"
         MERGE_LABELS: ""
 
   release: 
@@ -219,7 +219,7 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN${{ secrets.GH_PAT }}
 
       - uses: sqaisar/auto-release@v1.1.55
         env:

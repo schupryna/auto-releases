@@ -117,7 +117,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        GH_PAT: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN${{ secrets.GH_PAT }}
     
     - uses: phish108/autotag-action@1.1.60
       with:
