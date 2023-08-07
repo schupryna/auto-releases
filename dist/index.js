@@ -20273,7 +20273,7 @@ const shelljs = __nccwpck_require__(3516);
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
 
-const Error = {};
+function Error(){}
 
 async function loadBranch(octokit, branch) {
     const result = await octokit.rest.git.listMatchingRefs({
