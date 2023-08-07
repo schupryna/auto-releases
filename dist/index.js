@@ -24564,7 +24564,7 @@ async function setupAutoCLI() {
     const downloadPath = await tc.downloadTool(downloadUrl);
 
     core.info(`downloadPath: ${downloadPath}`);
-    const _output = await shelljs.exec(`${downloadPath} --version`);
+    const _output = await shelljs.exec(`chmod +x ${downloadPath} && ${downloadPath} --version`);
 
     core.info(`Output: ${_output.stdout}`);
     core.info(`Error output: ${_output.stderr}`);
