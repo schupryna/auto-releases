@@ -17022,6 +17022,8 @@ async function loadBranch(octokit, branch) {
 }
 
 async function fetchAll() {
+    core.info("Fetching all branches");
+
     const output = await shelljs.exec("git fetch --all --force", {
         silent: true,
     });
