@@ -17028,6 +17028,7 @@ async function fetchAll() {
         silent: true,
     });
 
+    core.info(output);
     core.info(output.stdout.trim());
 }
 
