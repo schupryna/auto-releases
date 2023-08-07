@@ -20065,6 +20065,14 @@ try {
 
 /***/ }),
 
+/***/ 955:
+/***/ ((module) => {
+
+module.exports = eval("require")("auto");
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -20264,11 +20272,13 @@ var __webpack_exports__ = {};
 (() => {
 /*eslint no-undef: "off"*/
 /*eslint no-trailing-spaces: "off"*/
+/*eslint no-unused-vars: "off"*/
 
 const core   = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 const semver = __nccwpck_require__(1383);
 const shelljs = __nccwpck_require__(3516);
+const auto = __nccwpck_require__(955);
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;

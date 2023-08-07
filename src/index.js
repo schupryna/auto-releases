@@ -1,10 +1,12 @@
 /*eslint no-undef: "off"*/
 /*eslint no-trailing-spaces: "off"*/
+/*eslint no-unused-vars: "off"*/
 
 const core   = require("@actions/core");
 const github = require("@actions/github");
 const semver = require("semver");
 const shelljs = require("shelljs");
+const auto = require("auto");
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
