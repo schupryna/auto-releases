@@ -77,9 +77,12 @@ jobs:
         node-version: 
         - 16
     steps: 
-    - uses: sqaisar/auto-release@v1.1.55
+    - uses: sqaisar/auto-release@master
       with:
         github-token: ${{ secrets.GH_PAT}}
+        dry-run: false
+        release-branch: latest
+        main-branch: next
 ```
 
 More advanced call as part of a test pipeline.
@@ -113,7 +116,9 @@ jobs:
     - uses: sqaisar/auto-release@v1.1.55
       with:
         github-token: ${{ secrets.GH_PAT}}
-        with-v: "true"
+        dry-run: false
+        release-branch: latest
+        main-branch: next
 ```
 
 more complex scenario in merge requests
@@ -222,11 +227,11 @@ jobs:
           GITHUB_TOKEN${{ secrets.GH_PAT }}
 
       - uses: sqaisar/auto-release@v1.1.55
-        env:
-          github-token: ${{ secrets.GH_PAT }}
-          branch: master
-          bump: ${{ steps.contributor.outputs.release || steps.bot.outputs.release }}
-          with-v: true
+        with:
+          github-token: ${{ secrets.GH_PAT}}
+          dry-run: false
+          release-branch: latest
+          main-branch: next
 ```
 
 ## More advanced usage
