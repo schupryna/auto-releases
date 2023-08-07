@@ -38,6 +38,7 @@ async function setupProj() {
         core.error(output.stderr.trim());
     }
     await setupAuto.setupAutoCLI();
+    core.info("Auto Version is: ");
     core.info(await shelljs.exec("auto --version"));
 }
 

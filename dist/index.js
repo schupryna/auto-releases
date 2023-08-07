@@ -24574,7 +24574,6 @@ async function setupAutoCLI() {
     //     "/usr/local/bin/auto",
     // );
     core.info("Successfully downloaded auto and extracted it");
-    core.addPath(path.join(tempDir, "auto-linux"));
     core.addPath(path.join(tempDir, "auto"));
 }
 
@@ -24836,6 +24835,7 @@ async function setupProj() {
         core.error(output.stderr.trim());
     }
     await setupAuto.setupAutoCLI();
+    core.info("Auto Version is: ");
     core.info(await shelljs.exec("auto --version"));
 }
 

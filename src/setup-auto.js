@@ -32,7 +32,6 @@ async function setupAutoCLI() {
     //     "/usr/local/bin/auto",
     // );
     core.info("Successfully downloaded auto and extracted it");
-    core.addPath(path.join(tempDir, "auto-linux"));
     core.addPath(path.join(tempDir, "auto"));
 }
 
