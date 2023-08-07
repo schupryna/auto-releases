@@ -40,14 +40,14 @@ jobs:
     - id: tagger
       uses: phish108/autotag-action@1.1.60
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT }}
         dry-run: 'TRUE'
     
     - name: Autotag Draft
       uses: phish108/autotag-action@master
       id: taggerTest
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT }}
         branch: master
         dry-run: 'true'
 
@@ -102,7 +102,7 @@ jobs:
     - id: tagger
       uses: phish108/autotag-action@1.1.60
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT }}
         dry-run: 'TRUE'
     
     - run: | 
@@ -117,10 +117,10 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        GH_PAT: ${{ secrets.GH_PAT }}
     
     - uses: phish108/autotag-action@1.1.60
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_PAT }}
         
     # TODO: Add release step to create a new release for the marketplace
