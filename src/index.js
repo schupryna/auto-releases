@@ -115,7 +115,7 @@ async function action() {
     // calculation uses the labels on PRs merged into current branch since the last release was cut
     const nextVersionCommand = await shelljs
     .exec(
-        `./node_modules/.bin/auto version --from ${
+        `auto version --from ${
             releaseType === 'full-release'
             ? latestTagWithoutPreReleases
             : latestTagWithPreReleases
