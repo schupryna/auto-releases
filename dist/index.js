@@ -24560,8 +24560,9 @@ async function setupAutoCLI() {
 
     const downloadUrl = "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz";
     const downloadPath = await tc.downloadTool(downloadUrl);
-    
+
     core.info(`downloadPath: ${downloadPath}`);
+    core.info(`downloadPath dir: ${await fs.readdirSync(downloadPath)}`);
     const extPath = await tc.extractTar(downloadPath, tempDir, [
         'xz',
         '--strip',
