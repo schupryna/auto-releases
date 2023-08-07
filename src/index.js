@@ -110,7 +110,8 @@ async function action() {
     core.info(`current git tag in branch ${currentTagInBranch}`);
     core.info(`latest git tag (including pre-releases): ${latestTagWithPreReleases}`);
     core.info(`latest git tag (excluding pre-releases): ${latestTagWithoutPreReleases}`);
-
+    core.info(require.resolve("semver"));
+    core.info(require.resolve("auto"));
     // calculate the SEMVER bump (major, minor, patch, premajor, preminor, prepatch)
     // calculation uses the labels on PRs merged into current branch since the last release was cut
     const nextVersionCommand = await shelljs
