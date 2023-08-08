@@ -17552,15 +17552,13 @@ function generateAutoRc({
     };
 }
 
-function validateInputs(inputs){
-    const error = new Error("Validation failed for inputs");
-
+function validateInputs(inputs){    
     Object.keys(inputs).forEach((key)=>{
         if(!inputs[key]) {
-            throw error;
+            throw new Error(`Validation failed for input ${key} value: ${inputs[key]}`);
         }
         if(!inputs[key].length) {
-            throw error;
+            throw new Error(`Validation failed for input ${key} value: ${inputs[key]}`);
         }
     });
 }
