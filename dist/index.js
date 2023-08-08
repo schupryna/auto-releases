@@ -17486,6 +17486,94 @@ module.exports = { setupAutoCLI };
 
 /***/ }),
 
+/***/ 1608:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/*eslint no-undef: "off"*/
+/*eslint no-trailing-spaces: "off"*/
+/*eslint no-unused-vars: "off"*/
+
+const fs = __nccwpck_require__(7147);
+  
+function generateAutoRc({
+    mainBranch,
+    releaseBranch,
+    slackChannelsInput,
+    notifyOnPreRelease,
+}){
+    return {
+        prereleaseBranches: [mainBranch],
+        baseBranch: releaseBranch,
+        plugins: [
+            [
+                "slack",
+                {
+                    auth: "app",
+                    channels: slackChannelsInput.split(',').map(i => i.trim()),
+                    atTarget: "here",
+                    publishPreRelease: notifyOnPreRelease,
+                    username: "Pypestream",
+                    iconEmoji: ":pypestream-newlogo"
+                }
+            ],
+            [
+                "jira",
+                "https://pypestream.atlassian.net/browse"
+            ],
+            [
+                "released",
+                {
+                    label: ":rocket:"
+                }
+            ]
+        ],
+        labels: [
+            {
+                releaseType: "major",
+                name: "major",
+            },
+            {
+                releaseType: "minor",
+                name: "minor",
+            },
+            {
+                releaseType: "patch",
+                name: "patch",
+            },
+            {
+                name: "docs",
+                releaseType: "skip",
+            },
+            {
+                name: "internal",
+                releaseType: "skip",
+            }
+        ]
+    };
+}
+
+function validateInputs(inputs){
+    const error = new Error("Validation failed for inputs");
+
+    Object.keys(inputs).forEach((key)=>{
+        if(!inputs[key]) {
+            throw error;
+        }
+        if(!inputs[key].length) {
+            throw error;
+        }
+    });
+}
+
+async function writeFile(fileName, content) {
+    await fs.writeFile(fileName, JSON.stringify(content));
+}
+
+module.exports = { validateInputs, generateAutoRc, writeFile };
+
+
+/***/ }),
+
 /***/ 2877:
 /***/ ((module) => {
 
@@ -17696,6 +17784,7 @@ const github = __nccwpck_require__(5438);
 const semver = __nccwpck_require__(1383);
 const exec = __nccwpck_require__(2915);
 const setupAuto = __nccwpck_require__(6022);
+const utils = __nccwpck_require__(1608);
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
@@ -17712,9 +17801,10 @@ async function loadBranch(octokit, branch) {
     return result.data.shift();
 }
 
-async function setupProj() {
+async function setupProj({autorc}) {
     core.info("Installing dependencies...");
     await setupAuto.setupAutoCLI();
+    await utils.writeFile(".autorc", autorc);
 }
 
 async function getCurrentTagInBranch() {
@@ -17734,22 +17824,44 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
-    // Setting up github token for auto cli
-    process.env["GH_TOKEN"] = token;
-
-    // setup project
-    await setupProj();
-
     // load inputs
-    const dryRun        = core.getInput("dry-run").toLowerCase();
+    const dryRun = core.getInput("dry-run").toLowerCase();
     const mainBranch = core.getInput("main-branch");
     const releaseBranch = core.getInput("release-branch");
+    const slackToken = core.getInput("slack-token");
+    const slackChannelsInput = core.getInput("slack-channels");
+    const notifyOnPreRelease = core.getInput("notify-on-pre-release") === "true" ? true : false;
+
+    // validate inputs
+    utils.validateInputs({
+        mainBranch,
+        releaseBranch,
+        slackToken,
+        slackChannelsInput,
+        notifyOnPreRelease,
+    });
+
+    // Setting up env for auto cli
+    process.env["GH_TOKEN"] = token;
+    process.env["SLACK_TOKEN"] = slackToken;
+
+    // setup project
+    await setupProj({
+        autorc: utils.generateAutoRc({
+            mainBranch,
+            releaseBranch,
+            notifyOnPreRelease,
+            slackChannelsInput,
+        }),
+    });
 
     const activeBranch = github.context.ref.replace(/refs\/heads\//, "");
     let branchInfo, releaseType;
 
 
-    core.info(`load the history of activity-branch ${ activeBranch } from context ref ${ github.context.ref }`);
+    core.info(
+        `load the history of activity-branch ${ activeBranch } from context ref ${ github.context.ref }`
+    );
     branchInfo  = await loadBranch(octokit, activeBranch);
 
     if (!branchInfo) {

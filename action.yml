@@ -9,6 +9,16 @@ inputs:
     default: ${{ github.token }}
     required: false
     description: 'the GH token to connect to github from the action'
+  slack-token:
+    description: "Slack token to send release notes to slack"
+    required: true
+  slack-channels:
+    description: "Slack channels to send release notes to, pass multiple , separated values e.g channel1, channel2"
+    required: true
+  notify-on-pre-release:
+    description: "Weather to notify on pre-release"
+    required: false
+    default: "true"
   dry-run:
     description: "check if the action would succeed"
     required: false

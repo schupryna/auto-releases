@@ -7,6 +7,7 @@ const github = require("@actions/github");
 const semver = require("semver");
 const exec = require("shelljs.exec");
 const setupAuto = require("./setup-auto");
+const utils = require("./utils");
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
@@ -23,9 +24,10 @@ async function loadBranch(octokit, branch) {
     return result.data.shift();
 }
 
-async function setupProj() {
+async function setupProj({autorc}) {
     core.info("Installing dependencies...");
     await setupAuto.setupAutoCLI();
+    await utils.writeFile(".autorc", autorc);
 }
 
 async function getCurrentTagInBranch() {
@@ -45,22 +47,44 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
-    // Setting up github token for auto cli
-    process.env["GH_TOKEN"] = token;
-
-    // setup project
-    await setupProj();
-
     // load inputs
-    const dryRun        = core.getInput("dry-run").toLowerCase();
+    const dryRun = core.getInput("dry-run").toLowerCase();
     const mainBranch = core.getInput("main-branch");
     const releaseBranch = core.getInput("release-branch");
+    const slackToken = core.getInput("slack-token");
+    const slackChannelsInput = core.getInput("slack-channels");
+    const notifyOnPreRelease = core.getInput("notify-on-pre-release") === "true" ? true : false;
+
+    // validate inputs
+    utils.validateInputs({
+        mainBranch,
+        releaseBranch,
+        slackToken,
+        slackChannelsInput,
+        notifyOnPreRelease,
+    });
+
+    // Setting up env for auto cli
+    process.env["GH_TOKEN"] = token;
+    process.env["SLACK_TOKEN"] = slackToken;
+
+    // setup project
+    await setupProj({
+        autorc: utils.generateAutoRc({
+            mainBranch,
+            releaseBranch,
+            notifyOnPreRelease,
+            slackChannelsInput,
+        }),
+    });
 
     const activeBranch = github.context.ref.replace(/refs\/heads\//, "");
     let branchInfo, releaseType;
 
 
-    core.info(`load the history of activity-branch ${ activeBranch } from context ref ${ github.context.ref }`);
+    core.info(
+        `load the history of activity-branch ${ activeBranch } from context ref ${ github.context.ref }`
+    );
     branchInfo  = await loadBranch(octokit, activeBranch);
 
     if (!branchInfo) {
