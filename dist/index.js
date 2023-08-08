@@ -17567,7 +17567,7 @@ function validateInputs(inputs){
 }
 
 async function writeFile(fileName, content) {
-    await fs.writeFile(fileName, JSON.stringify(content));
+    await fs.writeFileSync(fileName, JSON.stringify(content));
 }
 
 module.exports = { validateInputs, generateAutoRc, writeFile };
