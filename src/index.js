@@ -126,11 +126,9 @@ async function action() {
         throw new Error(nextVersionCommand.stderr);
     }
 
-    core.info(`nextVersionCommand.stdout.trim(): ${nextVersionCommand.stdout.trim()}`);
-
     let semverVersionBump = nextVersionCommand.stdout.trim();
 
-    core.info('original SEMVER bump calculated: ', semverVersionBump);
+    core.info(`original SEMVER bump calculated: ${semverVersionBump}`);
 
     // manually strip out the 'pre' prefix (preminor, prepatch, premajor) if running a full release
     if (releaseType === 'full-release') {
@@ -148,7 +146,7 @@ async function action() {
     );
 
     // ^ calculate the next version, factoring in the current version, SEMVER bump, and release type
-    core.info('computed next version', nextVersion, releaseType);
+    core.info(`computed next version ${nextVersion} ${releaseType}`);
 
     if (!semver.valid(nextVersion) || nextVersion === null) {
         throw Error(
@@ -163,7 +161,7 @@ async function action() {
         );
     }
 
-    console.log('---');
+    core.info('---');
 
     // is the version we're about to release OLDER than the latest release?
     if (
@@ -172,7 +170,7 @@ async function action() {
         !semver.gt(nextVersion, latestTagWithoutPreReleases.replace('v', ''))
     ) {
         throw Error(
-        `The next version slated to be released, v${nextVersion} is older than the latest stable release, ${latestTagWithoutPreReleases}`
+            `The next version slated to be released, v${nextVersion} is older than the latest stable release, ${latestTagWithoutPreReleases}`
         );
     }
 
@@ -180,15 +178,15 @@ async function action() {
         core.info("dry run, don't perform tagging");
         return;
     }
-    // const autoRelease = await exec(
-    //     `npx auto release --from ${latestTagWithoutPreReleases} --use-version v${nextVersion}`
-    // );
+    const autoRelease = await exec(
+        `npx auto release --from ${latestTagWithoutPreReleases} --use-version v${nextVersion}`
+    );
 
-    // if(autoRelease.ok) {
-    //     core.info(autoRelease.stdout.trim());
-    // }else {
-    //     throw new Error(autoRelease.stderr);
-    // }
+    if(autoRelease.ok) {
+        core.info(autoRelease.stdout.trim());
+    }else {
+        throw new Error(autoRelease.stderr);
+    }
     
 }
 
