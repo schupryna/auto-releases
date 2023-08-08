@@ -24832,6 +24832,7 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
+    // Setting up github token for auto cli
     process.env["GH_TOKEN"] = token;
 
     // setup project
