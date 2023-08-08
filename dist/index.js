@@ -24545,7 +24545,6 @@ try {
 /*eslint no-unused-vars: "off"*/
 
 const core = __nccwpck_require__(2186);
-const path = __nccwpck_require__(1017);
 const io = __nccwpck_require__(7436);
 const tc = __nccwpck_require__(7784);
 const shelljs = __nccwpck_require__(3516);
@@ -24561,16 +24560,11 @@ async function setupAutoCLI() {
     
     core.debug(`File downloaded: ${downloadPath}`);
 
-    const output = await shelljs.exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
-    
-    core.info(output.stdout.trim());
-    core.info(output.stderr.trim());
-
+    await shelljs.exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
     await shelljs.exec(`ls -a /usr/local/bin/`);
 
     core.addPath("/usr/local/bin/auto");
-    core.info(`Auto cli installed version: ${await shelljs.exec("auto --version").stdout.trim()}`);
-    core.info("Setup finished for auto");
+    core.info(`Setup finished for auto, version: ${await shelljs.exec("auto --version").stdout.trim()}`);
 }
 
 module.exports = { setupAutoCLI };
@@ -24837,6 +24831,8 @@ async function action() {
     // prepare octokit
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
+
+    process.env["GH_TOKEN"] = token;
 
     // setup project
     await setupProj();

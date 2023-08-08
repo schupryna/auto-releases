@@ -45,6 +45,8 @@ async function action() {
     const token = core.getInput("github-token", {required: true});
     const octokit = new github.getOctokit(token);
 
+    process.env["GH_TOKEN"] = token;
+
     // setup project
     await setupProj();
 
