@@ -62,6 +62,7 @@ async function action() {
         slackToken,
         slackChannelsInput,
         notifyOnPreRelease,
+        repository: repo.toUpperCase(),
     });
 
     // Setting up env for auto cli

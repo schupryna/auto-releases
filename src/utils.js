@@ -9,6 +9,7 @@ function generateAutoRc({
     releaseBranch,
     slackChannelsInput,
     notifyOnPreRelease,
+    repository,
 }){
     return {
         prereleaseBranches: [mainBranch],
@@ -22,7 +23,8 @@ function generateAutoRc({
                     atTarget: "here",
                     publishPreRelease: notifyOnPreRelease,
                     username: "Pypestream",
-                    iconEmoji: ":pypestream-newlogo"
+                    iconEmoji: ":pypestream-newlogo",
+                    title: repository,
                 }
             ],
             [
