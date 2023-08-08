@@ -24563,11 +24563,17 @@ async function setupAutoCLI() {
 
     await shelljs.exec(`gzip -d ${downloadPath}`).stdout.trim();
 
-    io.mv(
+    io.cp(
         path.join(tempDir, "auto-linux"),
-        path.join(tempDir, "auto"),
+        "/usr/local/bin/auto"
     );
-    core.addPath(path.join(tempDir, "auto"));
+    await shelljs.exec("chmod +x /usr/local/bin/auto");
+
+    // io.mv(
+    //     path.join(tempDir, "auto-linux"),
+    //     path.join(tempDir, "auto"),
+    // );
+    // core.addPath(path.join(tempDir, "auto"));
     core.info(`Auto cli installed version: ${await shelljs.exec("auto --version").stdout.trim()}`);
     core.info("Setup finished for auto");
 }
