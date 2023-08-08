@@ -5,7 +5,7 @@
 const core   = require("@actions/core");
 const github = require("@actions/github");
 const semver = require("semver");
-const shelljs = require("shelljs");
+const exec = require("shelljs.exec");
 const setupAuto = require("./setup-auto");
 
 const owner = github.context.payload.repository.owner.login;
@@ -29,7 +29,7 @@ async function setupProj() {
 }
 
 async function getCurrentTagInBranch() {
-    const output =  await shelljs.exec("git describe --tags --abbrev=0", {
+    const output =  await exec("git describe --tags --abbrev=0", {
        silent: true,
      });
 
@@ -109,8 +109,7 @@ async function action() {
     
     // calculate the SEMVER bump (major, minor, patch, premajor, preminor, prepatch)
     // calculation uses the labels on PRs merged into current branch since the last release was cut
-    const nextVersionCommand = await shelljs
-    .exec(
+    const nextVersionCommand = await exec(
         `auto version --from ${
             releaseType === 'full-release'
             ? latestTagWithoutPreReleases
@@ -180,7 +179,7 @@ async function action() {
         core.info("dry run, don't perform tagging");
         return;
     }
-    const autoRelease = await shelljs.exec(
+    const autoRelease = await exec(
         `npx auto release --from ${latestTagWithoutPreReleases} --use-version v${nextVersion}`
     );
 

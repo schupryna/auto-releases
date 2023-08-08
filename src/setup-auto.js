@@ -5,7 +5,7 @@
 const core = require("@actions/core");
 const io = require("@actions/io");
 const tc = require("@actions/tool-cache");
-const shelljs = require("shelljs");
+const exec = require("shelljs.exec");
 
 
 async function setupAutoCLI() {
@@ -18,11 +18,10 @@ async function setupAutoCLI() {
     
     core.debug(`File downloaded: ${downloadPath}`);
 
-    await shelljs.exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
-    await shelljs.exec(`ls -a /usr/local/bin/`);
+    await exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
 
     core.addPath("/usr/local/bin/auto");
-    core.info(`Setup finished for auto, version: ${await shelljs.exec("auto --version").stdout.trim()}`);
+    core.info(`Setup finished for auto, version: ${await exec("auto --version").stdout.trim()}`);
 }
 
 module.exports = { setupAutoCLI };
