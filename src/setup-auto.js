@@ -10,11 +10,6 @@ const shelljs = require("shelljs");
 
 
 async function setupAutoCLI() {
-    const tempDownloadFolder = 'temp_' + Math.floor(Math.random() * 2000000000);
-    const tempDirectory = process.env['RUNNER_TEMP'] || '';
-    const tempDir = path.join(tempDirectory, tempDownloadFolder);
-
-    await io.mkdirP(tempDir);
     await io.mkdirP("/usr/local/bin/");
 
     const downloadPath = await tc.downloadTool(
@@ -24,7 +19,7 @@ async function setupAutoCLI() {
     
     core.debug(`File downloaded: ${downloadPath}`);
 
-    const output = await shelljs.exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod x /usr/local/bin/auto`);
+    const output = await shelljs.exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
     
     core.info(output.stdout.trim());
     core.info(output.stderr.trim());
