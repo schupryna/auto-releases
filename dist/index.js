@@ -17812,7 +17812,6 @@ async function action() {
     if(!nextVersionCommand.ok){
         core.info("Error");
         core.error(nextVersionCommand.stderr);
-        core.error(nextVersionCommand.stdout);
         throw new Error(nextVersionCommand.stderr);
     }
 
@@ -17868,15 +17867,15 @@ async function action() {
         core.info("dry run, don't perform tagging");
         return;
     }
-    const autoRelease = await exec(
-        `npx auto release --from ${latestTagWithoutPreReleases} --use-version v${nextVersion}`
-    );
+    // const autoRelease = await exec(
+    //     `npx auto release --from ${latestTagWithoutPreReleases} --use-version v${nextVersion}`
+    // );
 
-    if(autoRelease.ok) {
-        core.info(autoRelease.stdout.trim());
-    }else {
-        throw new Error(autoRelease.stderr);
-    }
+    // if(autoRelease.ok) {
+    //     core.info(autoRelease.stdout.trim());
+    // }else {
+    //     throw new Error(autoRelease.stderr);
+    // }
     
 }
 
