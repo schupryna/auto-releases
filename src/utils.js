@@ -23,7 +23,7 @@ function generateAutoRc({
                     atTarget: "here",
                     publishPreRelease: notifyOnPreRelease,
                     username: "Pypestream",
-                    iconEmoji: ":pypestream-newlogo",
+                    iconEmoji: ":pypestream-newlogo:",
                     title: repository,
                 }
             ],
