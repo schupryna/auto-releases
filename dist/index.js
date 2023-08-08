@@ -24547,9 +24547,7 @@ try {
 const core = __nccwpck_require__(2186);
 const path = __nccwpck_require__(1017);
 const io = __nccwpck_require__(7436);
-const hc = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
-const fs = __nccwpck_require__(7147);
 const shelljs = __nccwpck_require__(3516);
 
 
@@ -24565,15 +24563,12 @@ async function setupAutoCLI() {
 
     await shelljs.exec(`gzip -d ${downloadPath}`).stdout.trim();
 
-    const directories = await fs.readdirSync(tempDir);
-
-    core.info(directories);
     io.mv(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
     );
     core.addPath(path.join(tempDir, "auto"));
-    core.info(`${await shelljs.exec("auto --version").stdout.trim()}`);
+    core.info(`Auto cli installed version: ${await shelljs.exec("auto --version").stdout.trim()}`);
     core.info("Setup finished for auto");
 }
 
@@ -24821,22 +24816,8 @@ async function loadBranch(octokit, branch) {
 }
 
 async function setupProj() {
-    core.info("Fetching all branches");
-
-    const output = await shelljs.exec("npm install -g auto", {
-        silent: true,
-    });
-
-    core.info(`output.stdout: ${output.stdout}`);
-
-    if(output.ok){
-        core.info(output.stdout.trim());
-    }else {
-        core.error(output.stderr.trim());
-    }
+    core.info("Installing dependencies...");
     await setupAuto.setupAutoCLI();
-    core.info("Auto Version is: ");
-    core.info(await shelljs.exec("auto --version"));
 }
 
 async function getCurrentTagInBranch() {
@@ -24930,6 +24911,9 @@ async function action() {
     );
     
     if(!nextVersionCommand.ok){
+        core.info("Error");
+        core.error(nextVersionCommand.stderr);
+        core.error(nextVersionCommand.stdout);
         throw new Error(nextVersionCommand.stderr);
     }
 

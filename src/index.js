@@ -24,22 +24,8 @@ async function loadBranch(octokit, branch) {
 }
 
 async function setupProj() {
-    core.info("Fetching all branches");
-
-    const output = await shelljs.exec("npm install -g auto", {
-        silent: true,
-    });
-
-    core.info(`output.stdout: ${output.stdout}`);
-
-    if(output.ok){
-        core.info(output.stdout.trim());
-    }else {
-        core.error(output.stderr.trim());
-    }
+    core.info("Installing dependencies...");
     await setupAuto.setupAutoCLI();
-    core.info("Auto Version is: ");
-    core.info(await shelljs.exec("auto --version"));
 }
 
 async function getCurrentTagInBranch() {
@@ -133,6 +119,9 @@ async function action() {
     );
     
     if(!nextVersionCommand.ok){
+        core.info("Error");
+        core.error(nextVersionCommand.stderr);
+        core.error(nextVersionCommand.stdout);
         throw new Error(nextVersionCommand.stderr);
     }
 

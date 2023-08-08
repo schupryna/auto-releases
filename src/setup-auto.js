@@ -5,9 +5,7 @@
 const core = require("@actions/core");
 const path = require("path");
 const io = require("@actions/io");
-const hc = require("@actions/http-client");
 const tc = require("@actions/tool-cache");
-const fs = require("fs");
 const shelljs = require("shelljs");
 
 
@@ -23,15 +21,12 @@ async function setupAutoCLI() {
 
     await shelljs.exec(`gzip -d ${downloadPath}`).stdout.trim();
 
-    const directories = await fs.readdirSync(tempDir);
-
-    core.info(directories);
     io.mv(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
     );
     core.addPath(path.join(tempDir, "auto"));
-    core.info(`${await shelljs.exec("auto --version").stdout.trim()}`);
+    core.info(`Auto cli installed version: ${await shelljs.exec("auto --version").stdout.trim()}`);
     core.info("Setup finished for auto");
 }
 
