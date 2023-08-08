@@ -91,7 +91,7 @@ async function action() {
       });
     });
 
-    core.info('git tags from github', tags);
+    core.info(`git tags from github ${tags}`);
 
     // get the latest git tag version, INCLUDING pre-releases
     const latestTagWithPreReleases = semver.maxSatisfying(tags, '*', {
@@ -125,6 +125,8 @@ async function action() {
         core.error(nextVersionCommand.stderr);
         throw new Error(nextVersionCommand.stderr);
     }
+
+    core.info(`nextVersionCommand.stdout.trim(): ${nextVersionCommand.stdout.trim()}`);
 
     let semverVersionBump = nextVersionCommand.stdout.trim();
 
