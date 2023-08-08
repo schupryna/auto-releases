@@ -19,35 +19,20 @@ async function setupAutoCLI() {
     await io.mkdirP(tempDir);
 
     const downloadUrl = "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz";
-    const downloadPath = await tc.downloadTool(downloadUrl);
+    const downloadPath = await tc.downloadTool(downloadUrl, path.join(tempDir, "auto-linux.gz"));
 
-    core.info(`downloadPath: ${downloadPath}`);
-    const _output = await shelljs.exec(`chmod +x ${downloadPath} && ${downloadPath} --version`);
+    await shelljs.exec(`gzip -d ${downloadPath}`).stdout.trim();
 
-    core.info(`Output: ${_output.stdout}`);
-    core.info(`Error output: ${_output.stderr}`);
-    core.info(`downloadPath dir: ${await fs.readdirSync(downloadPath)}`);
-    const extPath = await tc.extractTar(downloadPath, tempDir, [
-        'xz',
-        '--strip',
-        '1'
-    ]);
-
-    core.info(`extPath: ${extPath}`);
-    core.info(`tempDir: ${tempDir}`);
     const directories = await fs.readdirSync(tempDir);
 
     core.info(directories);
-    io.cp(
+    io.mv(
         path.join(tempDir, "auto-linux"),
         path.join(tempDir, "auto"),
     );
-    // io.cp(
-    //     path.join(tempDir, "auto-linux"),
-    //     "/usr/local/bin/auto",
-    // );
-    core.info("Successfully downloaded auto and extracted it");
     core.addPath(path.join(tempDir, "auto"));
+    core.info(`${await shelljs.exec("auto --version").stdout.trim()}`);
+    core.info("Setup finished for auto");
 }
 
 module.exports = { setupAutoCLI };
