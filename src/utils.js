@@ -63,14 +63,14 @@ function generateAutoRc({
 
 function validateInputs(inputs){    
     Object.keys(inputs).forEach((key) => {
-        if(typeof input[key] === "boolean") {
+        if(typeof inputs[key] === "boolean") {
             return;
         }
         if(!inputs[key]) {
-            throw new Error(`Validation failed for input ${key} value: ${inputs[key]}`);
+            throw new Error(`Validation failed for input ${key}}`);
         }
         if(!inputs[key].length) {
-            throw new Error(`Validation failed for input ${key} value: ${inputs[key]}`);
+            throw new Error(`Validation failed for input ${key}}`);
         }
     });
 }
