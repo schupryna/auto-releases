@@ -1,8 +1,8 @@
-name: 'AutoRelease'
+name: 'auto-release'
 author: 'sqaisar'
 description: 'AutoRelease with Semantic Versioning from next and latest branches'
 branding:
-  icon: tag
+  icon: activity
   color: green
 inputs:
   github-token: # id of input
