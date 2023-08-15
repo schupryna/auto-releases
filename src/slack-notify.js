@@ -6,7 +6,7 @@ const core = require('@actions/core');
 async function sendReleaseNotesToSlack(octokit, slackToken, owner, repo, tag, channels) {
     try {
         // 1. Query GitHub API to get release by tag
-        const releaseResponse = await octokit.repos.getReleaseByTag({
+        const releaseResponse = await octokit.rest.repos.getReleaseByTag({
             owner,
             repo,
             tag
