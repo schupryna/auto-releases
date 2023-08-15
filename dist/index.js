@@ -20945,6 +20945,7 @@ const core = __nccwpck_require__(2186);
 async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag, channels) {
     try {
         // 1. Query GitHub API to get release by tag
+        core.info(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`);
         const releaseResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`, {
             headers: {
                 'Authorization': `token ${githubToken}`,
