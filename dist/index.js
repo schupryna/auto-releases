@@ -25753,7 +25753,7 @@ async function action() {
                 slackToken,
                 owner,
                 repo,
-                nextVersion,
+                `v${nextVersion}`,
                 slackChannelsInput.split(',').map(c => c.trim())
             );
         }
