@@ -33,7 +33,7 @@ jobs:
           node-version: 16
 
       - name: Use auto-releases
-        uses: sqaisar/auto-releases@v1
+        uses: sqaisar/auto-releases@next
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           slack-token: ${{ secrets.SLACK_TOKEN }}
