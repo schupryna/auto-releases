@@ -211,7 +211,7 @@ async function action() {
         core.info(autoRelease.stdout.trim());
         if(shouldSendSlackNotification) {
             await sendSlackNotifications(
-                octokit,
+                token,
                 slackToken,
                 owner,
                 repo,

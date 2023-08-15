@@ -3,16 +3,18 @@
 const axios = require('axios');
 const core = require('@actions/core');
 
-async function sendReleaseNotesToSlack(octokit, slackToken, owner, repo, tag, channels) {
+async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag, channels) {
     try {
         // 1. Query GitHub API to get release by tag
-        const releaseResponse = await octokit.rest.repos.getReleaseByTag({
-            owner,
-            repo,
-            tag
+        const releaseResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
         });
 
         core.info(releaseResponse);
+        core.info(releaseResponse.data.body);
         let releaseNotes = releaseResponse.data.body;
 
         // 2. Modify the release notes
