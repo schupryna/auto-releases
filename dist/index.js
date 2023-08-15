@@ -20951,6 +20951,7 @@ async function sendReleaseNotesToSlack(octokit, slackToken, owner, repo, tag, ch
             tag
         });
 
+        core.info(releaseResponse);
         let releaseNotes = releaseResponse.data.body;
 
         // 2. Modify the release notes
@@ -25744,7 +25745,14 @@ async function action() {
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
         if(shouldSendSlackNotification) {
-            await sendSlackNotifications(octokit, slackToken, owner, repo, nextVersion);
+            await sendSlackNotifications(
+                octokit,
+                slackToken,
+                owner,
+                repo,
+                nextVersion,
+                slackChannelsInput.split(',').map(c => c.trim())
+            );
         }
     }else {
         throw new Error(autoRelease.stderr);

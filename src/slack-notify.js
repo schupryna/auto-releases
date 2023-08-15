@@ -12,6 +12,7 @@ async function sendReleaseNotesToSlack(octokit, slackToken, owner, repo, tag, ch
             tag
         });
 
+        core.info(releaseResponse);
         let releaseNotes = releaseResponse.data.body;
 
         // 2. Modify the release notes

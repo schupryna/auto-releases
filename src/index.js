@@ -210,7 +210,14 @@ async function action() {
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
         if(shouldSendSlackNotification) {
-            await sendSlackNotifications(octokit, slackToken, owner, repo, nextVersion);
+            await sendSlackNotifications(
+                octokit,
+                slackToken,
+                owner,
+                repo,
+                nextVersion,
+                slackChannelsInput.split(',').map(c => c.trim())
+            );
         }
     }else {
         throw new Error(autoRelease.stderr);
