@@ -1,6 +1,6 @@
-name: 'auto-release'
+name: 'auto-releases'
 author: 'sqaisar'
-description: 'AutoRelease with Semantic Versioning from next and latest branches'
+description: 'AutoReleases with Semantic Versioning from next and latest branches'
 branding:
   icon: activity
   color: green

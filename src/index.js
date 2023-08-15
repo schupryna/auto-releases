@@ -8,6 +8,7 @@ const semver = require("semver");
 const exec = require("shelljs.exec");
 const setupAuto = require("./setup-auto");
 const utils = require("./utils");
+const sendSlackNotifications = require("./slack-notify");
 
 const owner = github.context.payload.repository.owner.login;
 const repo = github.context.payload.repository.name;
@@ -74,13 +75,11 @@ async function action() {
         autorc: utils.generateAutoRc({
             mainBranch,
             releaseBranch,
-            notifyOnPreRelease,
-            slackChannelsInput,
         }),
     });
 
     const activeBranch = github.context.ref.replace(/refs\/heads\//, "");
-    let branchInfo, releaseType;
+    let branchInfo, releaseType, shouldSendSlackNotification = notifyOnPreRelease;
 
 
     core.info(
@@ -158,6 +157,7 @@ async function action() {
     // manually strip out the 'pre' prefix (preminor, prepatch, premajor) if running a full release
     if (releaseType === 'full-release') {
         semverVersionBump = semverVersionBump.replace('pre', '');
+        shouldSendSlackNotification = true;
     }
 
     core.info(`adjusted semverVersionBump after factoring in the type of release: ${semverVersionBump}`);
@@ -209,6 +209,9 @@ async function action() {
 
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
+        if(shouldSendSlackNotification) {
+            await sendSlackNotifications(octokit, slackToken, owner, repo, nextVersion);
+        }
     }else {
         throw new Error(autoRelease.stderr);
     }

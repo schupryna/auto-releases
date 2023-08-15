@@ -6,27 +6,12 @@ const fs = require('fs');
   
 function generateAutoRc({
     mainBranch,
-    releaseBranch,
-    slackChannelsInput,
-    notifyOnPreRelease,
-    repository,
+    releaseBranch
 }){
     return {
         prereleaseBranches: [mainBranch],
         baseBranch: releaseBranch,
         plugins: [
-            [
-                "slack",
-                {
-                    auth: "app",
-                    channels: slackChannelsInput.split(',').map(i => i.trim()),
-                    atTarget: "here",
-                    publishPreRelease: notifyOnPreRelease,
-                    username: "Pypestream",
-                    iconEmoji: ":pypestream-newlogo:",
-                    title: repository,
-                }
-            ],
             [
                 "jira",
                 "https://pypestream.atlassian.net/browse"
