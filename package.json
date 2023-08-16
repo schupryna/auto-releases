@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sqaisar/auto-releases.git"
+    "url": "git+https://github.com/pypestream/auto-releases.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sqaisar/auto-releases/issues"
+    "url": "https://github.com/pypestream/auto-releases/issues"
   },
-  "homepage": "https://github.com/sqaisar/auto-releases#readme",
+  "homepage": "https://github.com/pypestream/auto-releases#readme",
   "dependencies": {
     "@actions/core": "1.10.0",
     "@actions/github": "5.1.1",

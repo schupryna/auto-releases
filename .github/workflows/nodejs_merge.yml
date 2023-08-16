@@ -6,8 +6,8 @@ name: Node.js CI
 on:
   pull_request:
     branches: 
-    - master 
-    - main
+    - next 
+    - latest
 
 jobs:
   lint:
@@ -23,7 +23,6 @@ jobs:
 
   merge: 
     needs: lint
-    if: github.actor == 'sqaisar' ||  startsWith(github.actor, 'dependabot')
     
     runs-on: ubuntu-latest
 
@@ -82,7 +81,6 @@ jobs:
 
   build:
     needs: verify
-    if: github.actor == 'sqaisar' || startsWith(github.actor, 'dependabot')
 
     runs-on: ubuntu-latest
 
@@ -123,7 +121,7 @@ jobs:
         npm ci
         npm run package
         npm --no-git-tag-version --allow-same-version version ${{ steps.tagger.outputs.new-tag }} 
-        sed -ri "s/sqaisar\/auto-release@[0-9]*\.[0-9]*\.[0-9]*/sqaisar\/auto-release@${{ steps.tagger.outputs.new-tag }}/g" README.md
+        sed -ri "s/pypestream\/auto-release@[0-9]*\.[0-9]*\.[0-9]*/pypestream\/auto-release@${{ steps.tagger.outputs.new-tag }}/g" README.md
         git commit -m "updated dist file for $GITSHA" -a 
       env:
         GITSHA: ${{ github.sha }}

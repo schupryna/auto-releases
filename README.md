@@ -1,6 +1,6 @@
 # `auto-releases` GitHub Action
 
-**Author**: sqaisar
+**Author**: pypestream
 
 Automate your releases with the `auto-releases` GitHub Action. Seamlessly generate releases/pre-releases with semantic versioning and notify your Slack channels in real-time.
 
@@ -33,7 +33,7 @@ jobs:
           node-version: 16
 
       - name: Use auto-releases
-        uses: sqaisar/auto-releases@next
+        uses: pypestream/auto-releases@next
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           slack-token: ${{ secrets.SLACK_TOKEN }}
