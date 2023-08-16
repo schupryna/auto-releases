@@ -48,7 +48,7 @@ jobs:
       id: taggerTest
       with:
         github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        branch: master
+        branch: next
         dry-run: 'true'
 
     - name: verify Tags
