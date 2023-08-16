@@ -32,7 +32,7 @@ jobs:
     - name: automerge
       uses: "pascalgn/automerge-action@v0.15.6"
       env:
-        GITHUB_TOKEN: "${{ secrets.GH_PAT }}"
+        GITHUB_TOKEN: "${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}"
         MERGE_LABELS: ""
 
   test:
@@ -44,7 +44,7 @@ jobs:
     - id: tagger
       uses: phish108/autotag-action@1.1.60
       with:
-        github-token: ${{ secrets.GH_PAT }}
+        github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         dry-run: 'TRUE'
         branch: master 
     
@@ -52,7 +52,7 @@ jobs:
       uses: phish108/autotag-action@master
       id: taggerTest
       with:
-        github-token: ${{ secrets.GH_PAT }}
+        github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         branch: master
         dry-run: 'true'
 
@@ -111,7 +111,7 @@ jobs:
       if: ${{ steps.release.outputs.proceed == 'true' }}
       uses: phish108/autotag-action@1.1.60
       with:
-        github-token: ${{ secrets.GH_PAT }}
+        github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         branch: master
         dry-run: 'TRUE'
          
@@ -131,10 +131,10 @@ jobs:
       if: ${{ steps.release.outputs.proceed == 'true' }}
       uses: ad-m/github-push-action@master
       with:
-        GITHUB_TOKEN${{ secrets.GH_PAT }}
+        GITHUB_TOKEN${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
     
     - uses: phish108/autotag-action@1.1.60
       if: ${{ steps.release.outputs.proceed == 'true' }}
       with:
-        github-token: ${{ secrets.GH_PAT }}
+        github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         branch: master
