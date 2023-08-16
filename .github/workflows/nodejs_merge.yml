@@ -137,4 +137,4 @@ jobs:
       if: ${{ steps.release.outputs.proceed == 'true' }}
       with:
         github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        branch: master
+        branch: next
