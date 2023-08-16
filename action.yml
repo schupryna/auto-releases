@@ -1,5 +1,5 @@
 name: 'auto-releases'
-author: 'sqaisar'
+author: 'pypestream'
 description: 'AutoReleases with Semantic Versioning from next and latest branches'
 branding:
   icon: activity
