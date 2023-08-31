@@ -19,6 +19,12 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
         core.info(releaseResponse.data.body);
         const releaseNotes = releaseResponse.data.body;
 
+        // Capitalize the repo name
+        const capitalizedRepo = repo.charAt(0).toUpperCase() + repo.slice(1);
+
+        // Include the @here mention
+        const titleMessage = `@here - New release from ${capitalizedRepo}!\n`;
+
         const sendToChannel = async (channel) => {
             let slackPayload;
 
