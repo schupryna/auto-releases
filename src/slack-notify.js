@@ -29,6 +29,7 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
             let slackPayload;
 
             try {
+                core.info("Sending message the by formatting it");
                 slackPayload = formatSlackMessage(releaseNotes, owner, repo, tag);
             } catch(e) {
                 core.info("Failed to format slack message");
@@ -41,12 +42,14 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
                 };
             }
 
-            await axios.post('https://slack.com/api/chat.postMessage', slackPayload, {
+            const response = await axios.post('https://slack.com/api/chat.postMessage', slackPayload, {
                 headers: {
                     'Authorization': `Bearer ${slackToken}`,
                     'Content-Type': 'application/json'
                 }
             });
+
+            core.info(response);
         };
 
         // 3. Send release notes to each Slack channel in parallel
