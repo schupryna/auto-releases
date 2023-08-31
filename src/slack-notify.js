@@ -31,6 +31,7 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
             try {
                 slackPayload = formatSlackMessage(content, owner, repo, tag);
             } catch(e) {
+                core.info(e);
                 slackPayload = {
                     text: titleMessage + releaseNotes,
                     channel: channel,
