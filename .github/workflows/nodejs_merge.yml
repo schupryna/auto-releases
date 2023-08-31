@@ -46,14 +46,14 @@ jobs:
       with:
         github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         dry-run: 'TRUE'
-        branch: master 
+        branch: next 
     
     - name: Autotag Draft
       uses: phish108/autotag-action@master
       id: taggerTest
       with:
         github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        branch: master
+        branch: next
         dry-run: 'true'
 
     - name: verify Tags
@@ -112,7 +112,7 @@ jobs:
       uses: phish108/autotag-action@1.1.60
       with:
         github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        branch: master
+        branch: next
         dry-run: 'TRUE'
          
     - if: ${{ steps.release.outputs.proceed == 'true' }}
