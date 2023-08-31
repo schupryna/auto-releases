@@ -30,7 +30,13 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
 
             try {
                 core.info("Sending message the by formatting it");
-                slackPayload = formatSlackMessage(releaseNotes, owner, repo, tag);
+                slackPayload = {
+                    channel: channel,
+                    icon_emoji: ':pypestream-newlogo:',
+                    username: "Pypestream",
+                    ...formatSlackMessage(releaseNotes, owner, repo, tag),
+                };
+
             } catch(e) {
                 core.info("Failed to format slack message");
                 core.info(e);
