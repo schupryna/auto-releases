@@ -20970,6 +20970,7 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
             try {
                 slackPayload = formatSlackMessage(releaseNotes, owner, repo, tag);
             } catch(e) {
+                core.info("Failed to format slack message");
                 core.info(e);
                 slackPayload = {
                     text: titleMessage + releaseNotes,
