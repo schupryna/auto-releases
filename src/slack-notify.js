@@ -2,6 +2,7 @@
 
 const axios = require('axios');
 const core = require('@actions/core');
+const { formatSlackMessage } = require('./utils');
 
 async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag, channels) {
     try {
@@ -16,24 +17,21 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
 
         core.info(releaseResponse);
         core.info(releaseResponse.data.body);
-        let releaseNotes = releaseResponse.data.body;
-
-        // 2. Modify the release notes
-        releaseNotes += "\n\n :rocket:";
-
-        // Capitalize the repo name
-        const capitalizedRepo = repo.charAt(0).toUpperCase() + repo.slice(1);
-
-        // Include the @here mention
-        const titleMessage = `@here - New release from ${capitalizedRepo}!\n`;
+        const releaseNotes = releaseResponse.data.body;
 
         const sendToChannel = async (channel) => {
-            const slackPayload = {
-                text: titleMessage + releaseNotes,
-                channel: channel,
-                icon_emoji: ':pypestream-newlogo:',
-                username: "Pypestream"
-            };
+            let slackPayload;
+
+            try {
+                slackPayload = formatSlackMessage(content, owner, repo, tag);
+            } catch(e) {
+                slackPayload = {
+                    text: titleMessage + releaseNotes,
+                    channel: channel,
+                    icon_emoji: ':pypestream-newlogo:',
+                    username: "Pypestream"
+                };
+            }
 
             await axios.post('https://slack.com/api/chat.postMessage', slackPayload, {
                 headers: {
