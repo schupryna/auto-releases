@@ -20994,12 +20994,13 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
                 }
             });
 
-            core.info(JSON.stringify({
-                data: response.data,
-                status: response.status,
-                statusText: response.statusText,
-            }));
-            core.info(JSON.stringify(response));
+            if(response.status !== 200) {
+                core.info(JSON.stringify({
+                    data: response.data,
+                    status: response.status,
+                    statusText: response.statusText,
+                }));
+            }
         };
 
         // 3. Send release notes to each Slack channel in parallel
