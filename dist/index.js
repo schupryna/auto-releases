@@ -20968,7 +20968,7 @@ async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag
             let slackPayload;
 
             try {
-                slackPayload = formatSlackMessage(content, owner, repo, tag);
+                slackPayload = formatSlackMessage(releaseNotes, owner, repo, tag);
             } catch(e) {
                 core.info(e);
                 slackPayload = {
