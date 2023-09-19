@@ -34,8 +34,10 @@ inputs:
 outputs:
   new-tag: # id of output
     description: 'new tag'
-  tag: # id of output
-    description: 'latest tag'
+  latestTagWithoutPreReleases: # id of output
+    description: 'outputs latestTagWithoutPreReleases'
+  latestTagWithPreReleases:
+    description: 'outputs latestTagWithPreReleases'
 runs:
   using: 'node16'
   main: 'dist/index.js'

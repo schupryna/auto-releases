@@ -58,4 +58,5 @@ jobs:
 ## 📤 Outputs
 
 - **new-tag**: The new tag created.
-- **tag**: The most recent tag.
+- **latestTagWithoutPreReleases**: The most recent tag without pre-release.
+- **latestTagWithPreReleases**: The most recent tag with pre-release.

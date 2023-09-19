@@ -209,7 +209,8 @@ async function action() {
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
         core.setOutput("new-tag", nextVersion);
-        core.setOutput("tag", latestTagWithPreReleases);
+        core.setOutput("latestTagWithPreReleases", latestTagWithPreReleases);
+        core.setOutput("latestTagWithoutPreReleases", latestTagWithoutPreReleases);
         if(shouldSendSlackNotification) {
             await sendSlackNotifications(
                 token,
