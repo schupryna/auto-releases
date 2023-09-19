@@ -25748,15 +25748,14 @@ async function action() {
 
     releaseType = branchName === mainBranch ? "pre-release" : "full-release";
 
-    const tags = await octokit.rest.repos
-    .listTags({
-      owner,
-      repo,
+    const tags = await octokit.request('GET /repos/{owner}/{repo}/git/refs/tags', {
+        owner: owner,
+        repo: repo,
     })
     // toss out metadata other than the name of the git tags themselves
     .then((d) => {
       return d.data.map((item) => {
-        return item.name;
+        return item.ref.replace("refs/tags/", "");
       });
     });
 
@@ -25854,6 +25853,8 @@ async function action() {
 
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
+        core.setOutput("new-tag", nextVersion);
+        core.setOutput("tag", latestTagWithoutPreReleases);
         if(shouldSendSlackNotification) {
             await sendSlackNotifications(
                 token,
