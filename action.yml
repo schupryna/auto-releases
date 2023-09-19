@@ -38,6 +38,8 @@ outputs:
     description: 'outputs latestTagWithoutPreReleases'
   latestTagWithPreReleases:
     description: 'outputs latestTagWithPreReleases'
+  releaseType:
+    description: 'outputs releaseType one of (pre-release, full-release)'
 runs:
   using: 'node16'
   main: 'dist/index.js'

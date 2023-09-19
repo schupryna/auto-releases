@@ -60,3 +60,4 @@ jobs:
 - **new-tag**: The new tag created.
 - **latestTagWithoutPreReleases**: The most recent tag without pre-release.
 - **latestTagWithPreReleases**: The most recent tag with pre-release.
+- **releaseType**: one of pre-release, full-release.
