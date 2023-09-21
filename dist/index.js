@@ -25853,7 +25853,7 @@ async function action() {
 
     if(autoRelease.ok) {
         core.info(autoRelease.stdout.trim());
-        core.setOutput("new-tag", nextVersion);
+        core.setOutput("new-tag", `v${nextVersion}`);
         core.setOutput("latestTagWithPreReleases", latestTagWithPreReleases);
         core.setOutput("latestTagWithoutPreReleases", latestTagWithoutPreReleases);
         core.setOutput("releaseType", releaseType);
