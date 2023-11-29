@@ -25680,8 +25680,9 @@ async function getCurrentTagInBranch() {
     silent: true,
   });
 
-  const tag = output.stdout.trim() || "v0.0.1";
+  const tag = output.stdout.trim();
 
+  core.info(`output: ${JSON.stringify(output, undefined, 2)}`);
   return tag;
 }
 
@@ -25802,7 +25803,6 @@ async function action() {
 
   if (!nextVersionCommand.ok) {
     core.info(`Error: ${JSON.stringify(nextVersionCommand, null, 2)}`);
-    console.log(JSON.stringify(nextVersionCommand, null, 2));
     core.error(nextVersionCommand.stderr);
     throw new Error(nextVersionCommand.stderr);
   }
