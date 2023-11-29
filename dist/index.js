@@ -25680,7 +25680,7 @@ async function getCurrentTagInBranch() {
     silent: true,
   });
 
-  const tag = output.stdout.trim();
+  const tag = output.stdout.trim() || "v0.0.1";
 
   return tag;
 }
