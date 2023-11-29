@@ -156,7 +156,7 @@ async function action() {
   );
 
   if (!nextVersionCommand.ok) {
-    core.info("Error");
+    core.info(`Error: ${nextVersionCommand}`);
     core.error(nextVersionCommand.stderr);
     throw new Error(nextVersionCommand.stderr);
   }
