@@ -37,8 +37,6 @@ async function getCurrentTagInBranch() {
 
   const tag = output.stdout.trim();
 
-  core.info(`current tag is ${tag}`);
-
   return tag;
 }
 
