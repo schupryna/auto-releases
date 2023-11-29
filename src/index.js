@@ -98,6 +98,8 @@ async function action() {
   const branchName = branchInfo.ref.split("/").pop();
   const currentTagInBranch = await getCurrentTagInBranch();
 
+  core.info(`currentTagInBranch: ${currentTagInBranch}`);
+
   core.info(`active branch name is ${branchName}`);
 
   if (![mainBranch, releaseBranch].includes(branchName)) {
