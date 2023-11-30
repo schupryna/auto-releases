@@ -7,21 +7,26 @@ const io = require("@actions/io");
 const tc = require("@actions/tool-cache");
 const exec = require("shelljs.exec");
 
-
 async function setupAutoCLI() {
-    await io.mkdirP("/usr/local/bin/");
+  await io.mkdirP("/usr/local/bin/");
 
-    const downloadPath = await tc.downloadTool(
-        "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz",
-        "/usr/local/bin/auto-linux.gz"
-    );
-    
-    core.debug(`File downloaded: ${downloadPath}`);
+  const downloadPath = await tc.downloadTool(
+    "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz",
+    "/usr/local/bin/auto-linux.gz"
+  );
 
-    await exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
+  core.debug(`File downloaded: ${downloadPath}`);
 
-    core.addPath("/usr/local/bin/auto");
-    core.info(`Setup finished for auto, version: ${await exec("auto --version").stdout.trim()}`);
+  await exec(
+    `gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`
+  );
+
+  core.addPath("/usr/local/bin/auto");
+  core.info(
+    `Setup finished for auto, version: ${await exec(
+      "auto --version"
+    ).stdout.trim()}`
+  );
 }
 
 module.exports = { setupAutoCLI };

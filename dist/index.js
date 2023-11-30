@@ -20912,21 +20912,26 @@ const io = __nccwpck_require__(7436);
 const tc = __nccwpck_require__(7784);
 const exec = __nccwpck_require__(2915);
 
-
 async function setupAutoCLI() {
-    await io.mkdirP("/usr/local/bin/");
+  await io.mkdirP("/usr/local/bin/");
 
-    const downloadPath = await tc.downloadTool(
-        "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz",
-        "/usr/local/bin/auto-linux.gz"
-    );
-    
-    core.debug(`File downloaded: ${downloadPath}`);
+  const downloadPath = await tc.downloadTool(
+    "https://github.com/intuit/auto/releases/download/v11.0.0/auto-linux.gz",
+    "/usr/local/bin/auto-linux.gz"
+  );
 
-    await exec(`gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`);
+  core.debug(`File downloaded: ${downloadPath}`);
 
-    core.addPath("/usr/local/bin/auto");
-    core.info(`Setup finished for auto, version: ${await exec("auto --version").stdout.trim()}`);
+  await exec(
+    `gzip -d ${downloadPath} && mv /usr/local/bin/auto-linux /usr/local/bin/auto && chmod +x /usr/local/bin/auto`
+  );
+
+  core.addPath("/usr/local/bin/auto");
+  core.info(
+    `Setup finished for auto, version: ${await exec(
+      "auto --version"
+    ).stdout.trim()}`
+  );
 }
 
 module.exports = { setupAutoCLI };
@@ -20943,75 +20948,91 @@ const axios = __nccwpck_require__(8757);
 const core = __nccwpck_require__(2186);
 const { formatSlackMessage } = __nccwpck_require__(1608);
 
-async function sendReleaseNotesToSlack(githubToken, slackToken, owner, repo, tag, channels) {
-    try {
-        // 1. Query GitHub API to get release by tag
-        core.info(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`);
-        const releaseResponse = await axios.get(`https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`, {
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
+async function sendReleaseNotesToSlack(
+  githubToken,
+  slackToken,
+  owner,
+  repo,
+  tag,
+  channels
+) {
+  try {
+    // 1. Query GitHub API to get release by tag
+    core.info(
+      `https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`
+    );
+    const releaseResponse = await axios.get(
+      `https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`,
+      {
+        headers: {
+          Authorization: `token ${githubToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
+    );
 
-        core.info(releaseResponse);
-        core.info(releaseResponse.data.body);
-        const releaseNotes = releaseResponse.data.body;
+    core.info(releaseResponse);
+    core.info(releaseResponse.data.body);
+    const releaseNotes = releaseResponse.data.body;
 
-        // Capitalize the repo name
-        const capitalizedRepo = repo.charAt(0).toUpperCase() + repo.slice(1);
+    // Capitalize the repo name
+    const capitalizedRepo = repo.charAt(0).toUpperCase() + repo.slice(1);
 
-        // Include the @here mention
-        const titleMessage = `@here - New release from ${capitalizedRepo}!\n`;
+    // Include the @here mention
+    const titleMessage = `@here - New release from ${capitalizedRepo}!\n`;
 
-        const sendToChannel = async (channel) => {
-            let slackPayload;
+    const sendToChannel = async (channel) => {
+      let slackPayload;
 
-            try {
-                core.info("Sending message the by formatting it");
-                slackPayload = {
-                    channel: channel,
-                    icon_emoji: ':pypestream-newlogo:',
-                    username: "Pypestream",
-                    ...formatSlackMessage(releaseNotes, owner, repo, tag),
-                };
-
-            } catch(e) {
-                core.info("Failed to format slack message");
-                core.info(e);
-                slackPayload = {
-                    text: titleMessage + releaseNotes,
-                    channel: channel,
-                    icon_emoji: ':pypestream-newlogo:',
-                    username: "Pypestream"
-                };
-            }
-
-            const response = await axios.post('https://slack.com/api/chat.postMessage', slackPayload, {
-                headers: {
-                    'Authorization': `Bearer ${slackToken}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if(response.status !== 200) {
-                core.info(JSON.stringify({
-                    data: response.data,
-                    status: response.status,
-                    statusText: response.statusText,
-                }));
-            }
+      try {
+        core.info("Sending message the by formatting it");
+        slackPayload = {
+          channel: channel,
+          icon_emoji: ":pypestream-newlogo:",
+          username: "Pypestream",
+          ...formatSlackMessage(releaseNotes, owner, repo, tag),
         };
+      } catch (e) {
+        core.info("Failed to format slack message");
+        core.info(e);
+        slackPayload = {
+          text: titleMessage + releaseNotes,
+          channel: channel,
+          icon_emoji: ":pypestream-newlogo:",
+          username: "Pypestream",
+        };
+      }
 
-        // 3. Send release notes to each Slack channel in parallel
-        await Promise.all(channels.map(channel => sendToChannel(channel)));
+      const response = await axios.post(
+        "https://slack.com/api/chat.postMessage",
+        slackPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${slackToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-        core.info('Release notes sent to Slack channels successfully!');
+      if (response.status !== 200) {
+        core.info(
+          JSON.stringify({
+            data: response.data,
+            status: response.status,
+            statusText: response.statusText,
+          })
+        );
+      }
+    };
 
-    } catch (error) {
-        core.error(error.message);
-        throw error;
-    }
+    // 3. Send release notes to each Slack channel in parallel
+    await Promise.all(channels.map((channel) => sendToChannel(channel)));
+
+    core.info("Release notes sent to Slack channels successfully!");
+  } catch (error) {
+    core.error(error.message);
+    throw error;
+  }
 }
 
 module.exports = sendReleaseNotesToSlack;
@@ -25787,6 +25808,7 @@ async function action() {
   core.info(
     `latest git tag (excluding pre-releases): ${latestTagWithoutPreReleases}`
   );
+  core.info(`release type: ${releaseType}`);
 
   // calculate the SEMVER bump (major, minor, patch, premajor, preminor, prepatch)
   // calculation uses the labels on PRs merged into current branch since the last release was cut

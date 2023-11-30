@@ -5,6 +5,7 @@
 Automate your releases with the `auto-releases` GitHub Action. Seamlessly generate releases/pre-releases with semantic versioning and notify your Slack channels in real-time.
 
 ## Features:
+
 1. **Semantic Versioning**: Determine versions automatically from commit messages.
 2. **Releases/Pre-releases**: Decide the type of release based on branches such as 'next' and 'latest'.
 3. **Slack Notifications**: Send out updates about the release notes to specified Slack channels.
@@ -18,31 +19,31 @@ on:
   push:
     branches:
       - next
-      - release
+      - latest
 
 jobs:
   auto_release:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Use auto-releases
         uses: pypestream/auto-releases@next
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           slack-token: ${{ secrets.SLACK_TOKEN }}
-          slack-channels: 'general, releases'
+          slack-channels: "next, releases"
           notify-on-pre-release: true
           dry-run: false
-          release-branch: 'release'
-          main-branch: 'next'
+          release-branch: "latest"
+          main-branch: "next"
 ```
 
 ## 🔧 Inputs

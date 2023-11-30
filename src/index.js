@@ -142,6 +142,7 @@ async function action() {
   core.info(
     `latest git tag (excluding pre-releases): ${latestTagWithoutPreReleases}`
   );
+  core.info(`release type: ${releaseType}`);
 
   // calculate the SEMVER bump (major, minor, patch, premajor, preminor, prepatch)
   // calculation uses the labels on PRs merged into current branch since the last release was cut
