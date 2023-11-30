@@ -25716,6 +25716,8 @@ async function action() {
   const token = core.getInput("github-token", { required: true });
   const octokit = new github.getOctokit(token);
 
+  core.info(`octokit:  ${JSON.stringify(octokit, null, 2)}`);
+
   // load inputs
   const dryRun = core.getInput("dry-run").toLowerCase();
   const mainBranch = core.getInput("main-branch");
